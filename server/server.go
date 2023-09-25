@@ -6,12 +6,15 @@ import (
 
 	"github.com/ahmadexe/gin-source-code/middleware"
 	"github.com/ahmadexe/gin-source-code/models"
+	"github.com/ahmadexe/gin-source-code/validations"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 
 	"strconv"
 )
 
 var users []models.User
+var validate *validator.Validate
 
 func init() {
 	fmt.Println("Server is starting...")
@@ -25,6 +28,8 @@ func defaultRoute(ctx *gin.Context) {
 }
 
 func addUser(ctx *gin.Context) {
+	validate = validator.New()
+	validate.RegisterValidation("adult", validations.IsAdult)
 	var user models.User
 	err := ctx.ShouldBindJSON(&user)
 	if err != nil {
@@ -33,7 +38,13 @@ func addUser(ctx *gin.Context) {
 		})
 		return
 	}
-
+	err = validate.Struct(user)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "Bad request",
+		})
+		return
+	}
 	users = append(users, user)
 
 	ctx.JSON(http.StatusOK, gin.H{
