@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ahmadexe/gin-source-code/middleware"
 	"github.com/ahmadexe/gin-source-code/models"
 	"github.com/gin-gonic/gin"
 
@@ -133,6 +134,8 @@ func delete(ctx *gin.Context) {
 
 func main() {
 	router := gin.Default()
+	router.Use(middleware.Auth())
+
 	router.GET("/", defaultRoute)
 	router.POST("/users", addUser)
 	router.GET("/users", getAllUsers)
