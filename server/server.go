@@ -15,7 +15,7 @@ var users []models.User
 
 func init() {
 	fmt.Println("Server is starting...")
-	users = []models.User{{ID: 1, FirstName: "John", LastName: "Doe"}}
+	users = []models.User{{ID: 1, FirstName: "John", LastName: "Doe", Email: "johndoe@gmail.com", Age: 20}}
 }
 
 func defaultRoute(ctx *gin.Context) {
@@ -26,14 +26,14 @@ func defaultRoute(ctx *gin.Context) {
 
 func addUser(ctx *gin.Context) {
 	var user models.User
-	err := ctx.Bind(&user)
+	err := ctx.ShouldBindJSON(&user)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "Bad request",
 		})
 		return
 	}
-
+		
 	users = append(users, user)
 
 	ctx.JSON(http.StatusOK, gin.H{
