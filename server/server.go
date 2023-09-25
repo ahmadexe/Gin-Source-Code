@@ -33,7 +33,7 @@ func addUser(ctx *gin.Context) {
 		})
 		return
 	}
-		
+
 	users = append(users, user)
 
 	ctx.JSON(http.StatusOK, gin.H{
